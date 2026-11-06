@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pencarian ID OSIS</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #eef3f9;
+  margin: 0;
+  color: #17324f;
+}
+
+header {
+  background: #082c59;
+  color: white;
+  text-align: center;
+  padding: 25px;
+}
+
+.container {
+  max-width: 600px;
+  margin: 35px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px #0002;
+}
+
+h2 {
+  text-align: center;
+  color: #1262ad;
+}
+
+input {
+  width: 95%;
+  padding: 13px;
+  border: 1px solid #bbb;
+  border-radius: 7px;
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+button {
+  width: 100%;
+  padding: 13px;
+  background: #1262ad;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #082c59;
+}
+
+#hasil {
+  display: none;
+  margin-top: 25px;
+}
+
+.idcard {
+  width: 300px;
+  margin: auto;
+  border: 2px solid #1262ad;
+  border-radius: 15px;
+  text-align: center;
+  overflow: hidden;
+  background: white;
+}
+
+.top {
+  background: #082c59;
+  color: white;
+  padding: 18px;
+}
+
+.foto {
+  width: 110px;
+  height: 130px;
+  object-fit: cover;
+  border: 3px solid #1262ad;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.data {
+  padding: 15px;
+}
+
+.data h3 {
+  color: #1262ad;
+}
+
+.bottom {
+  background: #1262ad;
+  color: white;
+  padding: 12px;
+  font-size: 12px;
+}
+
+#pesan {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+#qrcode {
+  display: flex;
+  justify-content: center;
+  margin: 15px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #hasil, #hasil * {
+    visibility: visible;
+  }
+  #hasil {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  button {
+    display: none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2 style="color:white">
+    OSIS SMK NEGERI 1
+  </h2>
+  <p>TANJUNG PANDAN</p>
+  <p>Sistem Pencarian ID Anggota OSIS</p>
+</header>
+
+<div class="container">
+
+<h2>CARI ID CARD ANGGOTA</h2>
+
+<input
+  type="text"
+  id="nomorID"
+  placeholder="Masukkan Nomor ID OSIS"
+>
+
+<button onclick="cariID()">
+  CARI ID
+</button>
+
+<p id="pesan"></p>
+
+<div id="hasil">
+
+<div class="idcard">
+
+  <div class="top">
+    <h3 style="color:white">
+      KARTU IDENTITAS OSIS
+    </h3>
+    <p>SMK NEGERI 1 TANJUNG PANDAN</p>
+  </div>
+
+  <div class="data">
+
+    <img id="foto"
+      class="foto"
+      src="https://placehold.co/110x130"
+      alt="Foto anggota">
+
+    <h3 id="nama">NAMA ANGGOTA</h3>
+
+    <p id="jabatan">Jabatan: -</p>
+
+    <p id="kelas">Kelas: -</p>
+
+    <p id="idanggota">ID: -</p>
+
+    <div id="qrcode"></div>
+
+  </div>
+
+  <div class="bottom">
+    ORGANISASI SISWA INTRA SEKOLAH
+  </div>
+
+</div>
+
+<br>
+
+<button onclick="window.print()">
+  CETAK ID CARD
+</button>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+
+// DATABASE ANGGOTA OSIS
+
+const anggota = [
+
+{
+  id: "OSIS-001",
+  nama: "devin alfyano ",
+  jabatan: "Ketua OSIS",
+  kelas: "XI AKL1",
+  foto: ""
+},
+
+{
+  id: "OSIS-002",
+  nama: "Dyla adellia",
+  jabatan: "Wakil Ketua OSIS",
+  kelas: "XI AKL1",
+  foto: ""
+},
+
+{
+  id: "OSIS-003",
+  nama: "meyisya aksa afifah",
+  jabatan: "Sekretaris 2",
+  kelas: "X MPLB 1",
+  foto: ""
+},
+
+{
+  id: "OSIS-004",
+  nama: "Angellica",
+  jabatan: "Sekretaris 1",
+  kelas: "XI AKL 1",
+  foto: ""
+}
+
+,{
+  id: "OSIS-005",
+  nama: "",
+  jabatan: "",
+  kelas: "",
+  foto: ""
+}
+
+,{
+  id: "OSIS-006",
+  nama: "",
+  jabatan: "",
+  kelas: "",
+  foto: ""
+}
+
+,{
+  id: "OSIS-007",
+  nama: "VERDI ",
+  jabatan: "KETUA SEKBID 1",
+  kelas: "XI TKJ 1",
+  foto: ""
+}
+
+];
+
+// FUNGSI PENCARIAN ID
+
+function cariID() {
+
+  let nomor = document
+    .getElementById("nomorID")
+    .value.trim().toUpperCase();
+
+  let data = anggota.find(
+    a => a.id.toUpperCase() === nomor
+  );
+
+  let hasil = document.getElementById("hasil");
+  let pesan = document.getElementById("pesan");
+
+  hasil.style.display = "none";
+  document.getElementById("qrcode").innerHTML = "";
+
+  if (nomor === "") {
+    pesan.style.color = "orange";
+    pesan.innerText = "Masukkan nomor ID terlebih dahulu!";
+    return;
+  }
+
+  if (data) {
+
+    document.getElementById("nama").innerText =
+      data.nama;
+
+    document.getElementById("jabatan").innerText =
+      "Jabatan: " + data.jabatan;
+
+    document.getElementById("kelas").innerText =
+      "Kelas: " + data.kelas;
+
+    document.getElementById("idanggota").innerText =
+      "ID: " + data.id;
+
+    document.getElementById("foto").src =
+      data.foto || "https://placehold.co/110x130?text=FOTO";
+
+    hasil.style.display = "block";
+
+    pesan.style.color = "green";
+    pesan.innerText = "ID ANGGOTA DITEMUKAN!";
+
+    new QRCode(
+      document.getElementById("qrcode"),
+      {
+        text: data.id + " - " + data.nama,
+        width: 90,
+        height: 90
+      }
+    );
+
+  } else {
+
+    pesan.style.color = "red";
+    pesan.innerText =
+      "ID TIDAK DITEMUKAN! Periksa nomor ID Anda.";
+
+  }
+
+}
+
+// ENTER UNTUK MENCARI
+
+document.getElementById("nomorID")
+.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    cariID();
+  }
+});
+
+</script>
+
+</body>
+<body>
+    <a href="https:osisskansa.com">
+</body>
+</html>
+
+
